@@ -1,22 +1,22 @@
 'use strict';
 
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DB_URL);
-const Location = require('./model.js');
 const verifyUser = require('./auth.js');
-
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3002;
+
+// Required-in comoponents
+const Location = require('./model.js');
 const getMapbox = require('./location.js');
-
-
 
 // Add Validation
 const db = mongoose.connection;
@@ -28,15 +28,13 @@ db.once('open', function () {
 app.use(verifyUser);
 
 // API Routes
-// app.get('/country', Country);
-
 
 // Database Routes
 app.get('/', (request, response) => {
   response.status(200).send('Welcome!');
 });
 
-// connect tis app.get to the location functions
+// Request
 app.get('/location', getLocationInfo);
 
 async function getLocationInfo(request, response, next) {
@@ -49,14 +47,13 @@ async function getLocationInfo(request, response, next) {
   }
 }
 
-// app.post is needed to add a country (and notes?) to the database. 
+// Create: Add a country (and notes?) to the database. 
 app.post('/location', postLocationInfo);
 
 async function postLocationInfo(request, response, next) {
   console.log('You are in the POST function');
-  console.log(request.body.cityName);
-    let newLoc = await getMapbox(request.body.cityName, request.user.email);
-
+  // console.log(request.body.cityName);
+  let newLoc = await getMapbox(request.body.cityName, request.user.email);
   try {
     const newLocation = await Location.create({...newLoc, email: request.user.email});
     response.status(201).send(newLocation);
@@ -65,7 +62,7 @@ async function postLocationInfo(request, response, next) {
   }
 }
 
-// app.delete
+// Delete
 app.delete('/location/:locationid', deleteLocationInfo);
 
 async function deleteLocationInfo(request, response, next) {
@@ -80,10 +77,8 @@ async function deleteLocationInfo(request, response, next) {
   }
 }
 
-// app.put is needed to update notes
-
+// Update
 app.put('/location/:locationid', putLocationInfo);
-
 
 async function putLocationInfo(request, response, next) {
   console.log('Youre inside of the PUT function');
@@ -91,17 +86,14 @@ async function putLocationInfo(request, response, next) {
   console.log(id);
   try {
     let data = request.body;
-
-    const updateLocation = await Location.findByIdAndUpdate(id, {...data, email: request.user.email}, {
-      new: true, overwrite: true
-    });
+    const updateLocation = await Location.findByIdAndUpdate(id, {...data, email: request.user.email}, {new: true, overwrite: true});
     response.status(203).send(updateLocation);
-
   } catch (error) {
     next(error);
   }
 }
 
+// Catchall
 app.get('*', (request, response) => {
   response.status(404).send('Not available');
 });
