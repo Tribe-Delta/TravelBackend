@@ -59,10 +59,42 @@ async function postLocationInfo(request, response, next) {
   }
 }
 
+// app.delete
+app.delete('/location/:locationid', deleteLocationInfo);
+
+async function deleteLocationInfo(request, response, next) {
+  console.log('Youre inside of the DELETE function');
+  const id = request.params.locationid;
+  console.log(id);
+  try {
+    await Location.findByIdAndDelete(id);
+    response.status(204).send('success!');
+  } catch (error) {
+    next(error);
+  }
+}
+
 // app.put is needed to update notes
 
-// app.delete
+app.put('/location/:locationid', putLocationInfo);
 
+
+async function putLocationInfo(request, response, next) {
+  console.log('Youre inside of the PUT function');
+  let id = request.params.locationid;
+  console.log(id);
+  try {
+    let data = request.body;
+
+    const updateLocation = await Location.findByIdAndUpdate(id, data, {
+      new: true, overwrite: true
+    });
+    response.status(203).send(updateLocation);
+
+  } catch (error) {
+    next(error);
+  }
+}
 
 app.get('*', (request, response) => {
   response.status(404).send('Not available');
