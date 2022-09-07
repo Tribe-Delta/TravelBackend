@@ -27,29 +27,7 @@ async function seed() {
     // base_currency: {type: String, required: false}
   });
 
-
-  console.log('Timothee and Stepehen, You DID IT!!!!!');
-
-
-  // await Location.create({
-  //   title: 'The Hitchhiker\'s Guide to the Galaxy',
-  //   description: 'Science Fiction',
-  //   status: true
-  // });
-
-
-  // console.log('The Hitchhiker\'s Guide to the Galaxy was created.');
-
-
-  // await Location.create({
-  //   title: 'The Art of the Deal',
-  //   description: 'Fiction',
-  //   status: false
-  // });
-
-
-  // console.log('The Art of the Deal was ghost-written.');
-
+  console.log('You seeded it!!!!!');
 
   mongoose.disconnect();
 }
