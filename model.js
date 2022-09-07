@@ -18,10 +18,10 @@ const locationSchema = new Schema({
   currencySymbol:{type: String, required: false},
   firstLanguage: {type: String, required: true},
   secondLanguage:{type: String, required: false}
-  // conversion_rate: {type: String, required: false},
-  // base_currency: {type: String, required: false}
 });
 
-const ProjectModel =mongoose.model('Project', locationSchema);
+const ProjectModel = mongoose.model('Project', locationSchema);
 
 module.exports = ProjectModel;
+
+

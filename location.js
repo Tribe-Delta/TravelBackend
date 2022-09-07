@@ -2,20 +2,18 @@
 
 const axios = require('axios');
 
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
-// let cache = require('./cache.js');
-// const cacheInvalidationTime = 1000 * 60;
 
 
 // const placeURL = `https://api.mapbox.com/geocoding/v5/mapbox.places/seattle.json?types=place&access_token={process.env.MAPBOX_API_PUBLIC_KEY}`
 
 // function getLocationInfo(city, country) {
-
+  
 async function getMapbox() {
   const baseURL = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
   const searchType = '.json?types=place&access_token=';
-  // the searchQueryName is currently had-coded and needs to be formatted as 'request.query.city'
+  // the searchQueryName is currently hard-coded and needs to be formatted as 'request.query.city'
   let searchQueryName = 'seattle';
   const url = `${baseURL}${searchQueryName}${searchType}${process.env.MAPBOX_API_PUBLIC_KEY}`;
 
@@ -23,14 +21,14 @@ async function getMapbox() {
 
   // console.log(axResponse.data.features[0].text);
   // console.log(axResponse.data);
-
+  
   let id = axResponse.data.features[0].id;
   let longitude = axResponse.data.features[0].geometry.coordinates[0];
   let latitude = axResponse.data.features[0].geometry.coordinates[1];
   let city = axResponse.data.features[0].text;
   let state = axResponse.data.features[0].context[1].text;
   let country = axResponse.data.features[0].context[2].text;
-
+  
   const mapboxObj = {
     id: id,
     longitude: longitude,
@@ -51,16 +49,16 @@ async function getRestCountries(mapboxObj) {
   // the searchQueryName is currently had-coded and needs to be formatted as 'request.query.country'
   let searchQueryName = 'malta';
   const url = `${baseURL}${searchQueryName}`;
-
+  
   let axResponse = await axios.get(url);
-
+  
   let id = mapboxObj.id;
   let longitude = mapboxObj.longitude;
   let latitude = mapboxObj.latitude;
   let city = mapboxObj.city;
   let state = mapboxObj.state;
   let country = mapboxObj.country;
-
+  
   // let country = axResponse.data[0].name;
   // let latitude = axResponse.data[0].latlng[0];
   // let longitude = axResponse.data[0].latlng[1];
@@ -71,7 +69,7 @@ async function getRestCountries(mapboxObj) {
   let currencySymbol = axResponse.data[0].currencies[0].symbol;
   let firstLanguage = axResponse.data[0].languages[0].name;
   let secondLanguage = axResponse.data[0].languages[1].name;
-
+  
   const placeObj = {
     id: id,
     longitude: longitude,
@@ -87,7 +85,8 @@ async function getRestCountries(mapboxObj) {
     firstLanguage: firstLanguage,
     secondLanguage: secondLanguage
   };
-  parseData(placeObj);
+  // parseData(placeObj);
+  // console.log(placeObj);
 }
 
 
@@ -95,29 +94,32 @@ async function getRestCountries(mapboxObj) {
 
 // getLocationInfo();
 
-function parseData(placeObj) {
-  try {
-    let placeName = `${placeObj.city}, ${placeObj.country}`;
-    console.log(placeName);
-    const locationSummary = placeObj.map((locationData)=>{
-      return new Location(placeName, locationData);
-    });
-    return Promise.resolve(locationSummary);
-  } catch (error) {
-    return Promise.reject(error);
-  }
-}
+// function parseData(placeObj) {
+//   try {
+//     let placeName = `${placeObj.city}, ${placeObj.country}`;
+//     console.log(placeName);
+//     const locationSummary = placeObj.map((locationData)=>{
+//       return new Location(placeName, locationData);
+//     });
+//     return Promise.resolve(locationSummary);
+//   } catch (error) {
+//     return Promise.reject(error);
+//   }
+// }
+// ______________________________________________________________
+// let cache = require('./cache.js');
+// const cacheInvalidationTime = 1000 * 60;
 
 // class Location {
-//   constructor(placeName, locationData ) {
-//     this.city_name = cityName;
-//     this.valid_date = cityData.valid_date;
-//     this.low_temp = cityData.low_temp;
-//     this.high_temp = cityData.high_temp;
-//     this.description = cityData.weather.description;
-//   }
-
-
+  //   constructor(placeName, locationData ) {
+    //     this.city_name = cityName;
+    //     this.valid_date = cityData.valid_date;
+    //     this.low_temp = cityData.low_temp;
+    //     this.high_temp = cityData.high_temp;
+    //     this.description = cityData.weather.description;
+    //   }
+    
+    
 // function parseWeather(weatherData) {
 //   try {
 //     let cityName = weatherData.city_name;
