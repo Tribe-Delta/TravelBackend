@@ -7,7 +7,7 @@ const { Schema } = mongoose;
 const locationSchema = new Schema({
   id: {type: String, required: true},
   longitude: {type: Number, required: true},
-  latatude: {type: Number, required: true},
+  latitude: {type: Number, required: true},
   city:{type: String, required: true},
   state: {type: String, required: false},
   country:{type: String, required: true},
@@ -17,7 +17,8 @@ const locationSchema = new Schema({
   currency:{type: String, required: true},
   currencySymbol:{type: String, required: false},
   firstLanguage: {type: String, required: true},
-  secondLanguage:{type: String, required: false}
+  secondLanguage:{type: String, required: false},
+  email: {type: String, required: false}
 });
 
 const ProjectModel = mongoose.model('Project', locationSchema);
