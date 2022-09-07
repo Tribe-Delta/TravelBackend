@@ -11,7 +11,7 @@ async function seed() {
   await Location.create({
     id: '123456789',
     longitude: -122.330062,
-    latatude: 47.603832,
+    latitude: 47.603832,
     city: 'Seattle',
     state: 'Indiana',
     country: 'Iraq',
@@ -21,7 +21,8 @@ async function seed() {
     currency: 'USD',
     currencySymbol: '$',
     firstLanguage: 'English',
-    secondLanguage: 'Spanish'
+    secondLanguage: 'Spanish',
+    email: 'spacemandan01@gmail.com'
     // conversion_rate: {type: String, required: false},
     // base_currency: {type: String, required: false}
   });

@@ -10,11 +10,11 @@ const axios = require('axios');
 
 // function getLocationInfo(city, country) {
   
-async function getMapbox() {
+async function getMapbox(cityName, userEmail) {
   const baseURL = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
   const searchType = '.json?types=place&access_token=';
   // the searchQueryName is currently hard-coded and needs to be formatted as 'request.query.city'
-  let searchQueryName = 'seattle';
+  let searchQueryName = cityName;
   const url = `${baseURL}${searchQueryName}${searchType}${process.env.MAPBOX_API_PUBLIC_KEY}`;
 
   let axResponse = await axios.get(url);
@@ -35,11 +35,13 @@ async function getMapbox() {
     latitude: latitude,
     city: city,
     state: state,
-    country: country
+    country: country,
+    email: userEmail
   };
-  getRestCountries(mapboxObj);
+
+  return getRestCountries(mapboxObj);
 }
-getMapbox();
+// getMapbox();
 
 
 // const nextPlaceUrl = 'https://restcountries.com/v2/name/malta';
@@ -47,17 +49,19 @@ getMapbox();
 async function getRestCountries(mapboxObj) {
   const baseURL = 'https://restcountries.com/v2/name/';
   // the searchQueryName is currently had-coded and needs to be formatted as 'request.query.country'
-  let searchQueryName = 'malta';
-  const url = `${baseURL}${searchQueryName}`;
-  
-  let axResponse = await axios.get(url);
-  
   let id = mapboxObj.id;
   let longitude = mapboxObj.longitude;
   let latitude = mapboxObj.latitude;
   let city = mapboxObj.city;
   let state = mapboxObj.state;
   let country = mapboxObj.country;
+  let email = mapboxObj.email;
+
+  let searchQueryName = country;
+  const url = `${baseURL}${searchQueryName}`;
+  
+  let axResponse = await axios.get(url);
+  
   
   // let country = axResponse.data[0].name;
   // let latitude = axResponse.data[0].latlng[0];
@@ -68,7 +72,7 @@ async function getRestCountries(mapboxObj) {
   let currencyName = axResponse.data[0].currencies[0].name;
   let currencySymbol = axResponse.data[0].currencies[0].symbol;
   let firstLanguage = axResponse.data[0].languages[0].name;
-  let secondLanguage = axResponse.data[0].languages[1].name;
+  let secondLanguage = axResponse.data[0].languages[1]?.name;
   
   const placeObj = {
     id: id,
@@ -83,10 +87,12 @@ async function getRestCountries(mapboxObj) {
     currency: currencyName,
     currencySymbol: currencySymbol,
     firstLanguage: firstLanguage,
-    secondLanguage: secondLanguage
+    secondLanguage: secondLanguage,
+    email: email
   };
-  // parseData(placeObj);
-  // console.log(placeObj);
+
+  console.log(placeObj);
+  return placeObj;
 }
 
 
@@ -205,5 +211,3 @@ async function getRestCountries(mapboxObj) {
 // }
 
 module.exports = getMapbox;
-module.exports = getRestCountries;
-

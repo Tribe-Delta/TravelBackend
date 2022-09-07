@@ -7,14 +7,16 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DB_URL);
 const Location = require('./model.js');
+const verifyUser = require('./auth.js');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 const PORT = process.env.PORT || 3002;
-// const Country = require('./location.js');
+const getMapbox = require('./location.js');
+
+
 
 // Add Validation
 const db = mongoose.connection;
@@ -22,6 +24,8 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log('Our Mongoose is connected');
 });
+
+app.use(verifyUser);
 
 // API Routes
 // app.get('/country', Country);
@@ -37,9 +41,8 @@ app.get('/location', getLocationInfo);
 
 async function getLocationInfo(request, response, next) {
   console.log('You are in the GET function');
-
   try {
-    let results = await Location.find();
+    let results = await Location.find({email: request.user.email});
     response.status(200).send(results);
   } catch (error) {
     next(error);
@@ -48,11 +51,14 @@ async function getLocationInfo(request, response, next) {
 
 // app.post is needed to add a country (and notes?) to the database. 
 app.post('/location', postLocationInfo);
+
 async function postLocationInfo(request, response, next) {
   console.log('You are in the POST function');
-  console.log(request.body);
+  console.log(request.body.cityName);
+    let newLoc = await getMapbox(request.body.cityName, request.user.email);
+
   try {
-    const newLocation = await Location.create(request.body);
+    const newLocation = await Location.create({...newLoc, email: request.user.email});
     response.status(201).send(newLocation);
   } catch (error) {
     next(error);
@@ -86,7 +92,7 @@ async function putLocationInfo(request, response, next) {
   try {
     let data = request.body;
 
-    const updateLocation = await Location.findByIdAndUpdate(id, data, {
+    const updateLocation = await Location.findByIdAndUpdate(id, {...data, email: request.user.email}, {
       new: true, overwrite: true
     });
     response.status(203).send(updateLocation);
