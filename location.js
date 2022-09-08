@@ -5,7 +5,7 @@ const axios = require('axios');
 // sample url used to gather initial Mapbox data = `https://api.mapbox.com/geocoding/v5/mapbox.places/seattle.json?types=place&access_token={process.env.MAPBOX_API_PUBLIC_KEY}`
 
   
-async function getMapbox(cityName, userEmail) {
+async function getMapbox(cityName, userEmail, notes) {
   const baseURL = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
   const searchType = '.json?types=place&access_token=';
   // the searchQueryName is currently hard-coded and needs to be formatted as 'request.query.city'
@@ -20,7 +20,7 @@ async function getMapbox(cityName, userEmail) {
   let city = axResponse.data.features[0].text;
   let state = axResponse.data.features[0].context[1].text;
   let country = axResponse.data.features[0].context[2].text;
-  
+
   const mapboxObj = {
     id: id,
     longitude: longitude,
@@ -28,7 +28,8 @@ async function getMapbox(cityName, userEmail) {
     city: city,
     state: state,
     country: country,
-    email: userEmail
+    email: userEmail,
+    notes: notes
   };
 
   return getRestCountries(mapboxObj);
@@ -47,6 +48,7 @@ async function getRestCountries(mapboxObj) {
   let state = mapboxObj.state;
   let country = mapboxObj.country;
   let email = mapboxObj.email;
+  let notes = mapboxObj.notes;
 
   let searchQueryName = country;
   const url = `${baseURL}${searchQueryName}`;
@@ -75,7 +77,8 @@ async function getRestCountries(mapboxObj) {
     currencySymbol: currencySymbol,
     firstLanguage: firstLanguage,
     secondLanguage: secondLanguage,
-    email: email
+    email: email,
+    notes: notes
   };
 
   console.log(placeObj);

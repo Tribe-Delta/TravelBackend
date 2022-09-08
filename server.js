@@ -11,6 +11,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(verifyUser);
 
 const PORT = process.env.PORT || 3002;
 
@@ -25,7 +26,6 @@ db.once('open', function () {
   console.log('Our Mongoose is connected');
 });
 
-app.use(verifyUser);
 
 // API Routes
 
@@ -40,6 +40,7 @@ app.get('/location', getLocationInfo);
 async function getLocationInfo(request, response, next) {
   console.log('You are in the GET function');
   try {
+    // Dan, is the get request on pageload checking via email on the line below?
     let results = await Location.find({email: request.user.email});
     response.status(200).send(results);
   } catch (error) {
@@ -47,20 +48,6 @@ async function getLocationInfo(request, response, next) {
   }
 }
 
-// Create: Add a country (and notes?) to the database. 
-app.post('/location', postLocationInfo);
-
-async function postLocationInfo(request, response, next) {
-  console.log('You are in the POST function');
-  // console.log(request.body.cityName);
-  let newLoc = await getMapbox(request.body.cityName, request.user.email);
-  try {
-    const newLocation = await Location.create({...newLoc, email: request.user.email});
-    response.status(201).send(newLocation);
-  } catch (error) {
-    next(error);
-  }
-}
 
 // Delete
 app.delete('/location/:locationid', deleteLocationInfo);
@@ -77,6 +64,21 @@ async function deleteLocationInfo(request, response, next) {
   }
 }
 
+// Create: Add a country (and notes) to the database. 
+app.post('/location', postLocationInfo);
+
+async function postLocationInfo(request, response, next) {
+  console.log('You are in the POST function');
+  // console.log(request.body.cityName);
+  let newLoc = await getMapbox(request.body.cityName, request.user.email, request.body.notes);
+  try {
+    const newLocation = await Location.create({...newLoc, email: request.user.email});
+    response.status(201).send(newLocation);
+  } catch (error) {
+    next(error);
+  }
+}
+
 // Update
 app.put('/location/:locationid', putLocationInfo);
 
@@ -85,7 +87,8 @@ async function putLocationInfo(request, response, next) {
   let id = request.params.locationid;
   console.log(id);
   try {
-    let data = request.body;
+    // let data = request.body;
+    let data = await getMapbox(request.body.cityName, request.user.email, request.body.notes);
     const updateLocation = await Location.findByIdAndUpdate(id, {...data, email: request.user.email}, {new: true, overwrite: true});
     response.status(203).send(updateLocation);
   } catch (error) {
