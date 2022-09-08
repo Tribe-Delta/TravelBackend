@@ -68,8 +68,6 @@ async function deleteLocationInfo(request, response, next) {
 app.post('/location', postLocationInfo);
 
 async function postLocationInfo(request, response, next) {
-  console.log('You are in the POST function');
-  // console.log(request.body.cityName);
   let newLoc = await getMapbox(request.body.cityName, request.user.email, request.body.notes);
   try {
     const newLocation = await Location.create({...newLoc, email: request.user.email});
@@ -87,7 +85,6 @@ async function putLocationInfo(request, response, next) {
   let id = request.params.locationid;
   console.log(id);
   try {
-    // let data = request.body;
     let data = await getMapbox(request.body.cityName, request.user.email, request.body.notes);
     const updateLocation = await Location.findByIdAndUpdate(id, {...data, email: request.user.email}, {new: true, overwrite: true});
     response.status(203).send(updateLocation);

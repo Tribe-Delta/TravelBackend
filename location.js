@@ -14,6 +14,8 @@ async function getMapbox(cityName, userEmail, notes) {
 
   let axResponse = await axios.get(url);
   
+  
+
   let id = axResponse.data.features[0].id;
   let longitude = axResponse.data.features[0].geometry.coordinates[0];
   let latitude = axResponse.data.features[0].geometry.coordinates[1];
