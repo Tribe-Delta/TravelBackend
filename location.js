@@ -8,7 +8,6 @@ const axios = require('axios');
 async function getMapbox(cityName, userEmail, notes) {
   const baseURL = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
   const searchType = '.json?types=place&access_token=';
-  // the searchQueryName is currently hard-coded and needs to be formatted as 'request.query.city'
   let searchQueryName = cityName;
   const url = `${baseURL}${searchQueryName}${searchType}${process.env.MAPBOX_API_PUBLIC_KEY}`;
 
@@ -20,7 +19,6 @@ async function getMapbox(cityName, userEmail, notes) {
   let longitude = axResponse.data.features[0].geometry.coordinates[0];
   let latitude = axResponse.data.features[0].geometry.coordinates[1];
   let city = axResponse.data.features[0].text;
-  
   let state = '';
   axResponse.data.features[0].context.forEach((val) => {
     if(/(region).[0-9]+/.test(val.id) === true){
@@ -29,12 +27,19 @@ async function getMapbox(cityName, userEmail, notes) {
   });
   
   let country = '';
+  let shortCode = '';
   axResponse.data.features[0].context.forEach((val) => {
     if(/(country).[0-9]+/.test(val.id) === true){
       country = val.text;
+      console.log('=====================');
+      console.log(val.text);
+      var index = axResponse.data.features[0].context.findIndex(p => p.id === val.id);
+      console.log('Index of country: ', index);
+      shortCode = axResponse.data.features[0].context[index].short_code;
+      console.log('________________________');
+      console.log(country);
     }
-  });
-
+  })
 
   const mapboxObj = {
     id: id,
@@ -43,6 +48,7 @@ async function getMapbox(cityName, userEmail, notes) {
     city: city,
     state: state,
     country: country,
+    shortCode: shortCode,
     email: userEmail,
     notes: notes
   };
@@ -52,10 +58,12 @@ async function getMapbox(cityName, userEmail, notes) {
 
 
 // sample url used to gather initial RestCountries data = 'https://restcountries.com/v2/name/malta';
+// https://restcountries.com/v2/name/MT?fullText=true
 
 async function getRestCountries(mapboxObj) {
-  const baseURL = 'https://restcountries.com/v2/name/';
-  // the searchQueryName is currently hard-coded and needs to be formatted as 'request.query.country'
+  
+  const baseURL = `https://restcountries.com/v2/name/${mapboxObj.shortCode}?fullText=true`
+
   let id = mapboxObj.id;
   let longitude = mapboxObj.longitude;
   let latitude = mapboxObj.latitude;
@@ -64,11 +72,8 @@ async function getRestCountries(mapboxObj) {
   let country = mapboxObj.country;
   let email = mapboxObj.email;
   let notes = mapboxObj.notes;
-
-  let searchQueryName = country;
-  const url = `${baseURL}${searchQueryName}`;
   
-  let axResponse = await axios.get(url);
+  let axResponse = await axios.get(baseURL);
   
   let capital = axResponse.data[0].capital;
   let timezone = axResponse.data[0].timezones[0];
