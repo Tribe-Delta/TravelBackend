@@ -18,7 +18,8 @@ const locationSchema = new Schema({
   currencySymbol:{type: String, required: false},
   firstLanguage: {type: String, required: true},
   secondLanguage:{type: String, required: false},
-  email: {type: String, required: false}
+  email: {type: String, required: false},
+  notes: {type: String, required: false}
 });
 
 const ProjectModel = mongoose.model('Project', locationSchema);

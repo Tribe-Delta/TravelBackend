@@ -22,7 +22,8 @@ async function seed() {
     currencySymbol: '$',
     firstLanguage: 'English',
     secondLanguage: 'Spanish',
-    email: 'spacemandan01@gmail.com'
+    email: 'spacemandan01@gmail.com',
+    notes:''
     // conversion_rate: {type: String, required: false},
     // base_currency: {type: String, required: false}
   });
