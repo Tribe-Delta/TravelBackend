@@ -13,15 +13,28 @@ async function getMapbox(cityName, userEmail, notes) {
   const url = `${baseURL}${searchQueryName}${searchType}${process.env.MAPBOX_API_PUBLIC_KEY}`;
 
   let axResponse = await axios.get(url);
-  
-  
+  console.log(url);
+
 
   let id = axResponse.data.features[0].id;
   let longitude = axResponse.data.features[0].geometry.coordinates[0];
   let latitude = axResponse.data.features[0].geometry.coordinates[1];
   let city = axResponse.data.features[0].text;
-  let state = axResponse.data.features[0].context[1].text;
-  let country = axResponse.data.features[0].context[2].text;
+  
+  let state = '';
+  axResponse.data.features[0].context.forEach((val) => {
+    if(/(region).[0-9]+/.test(val.id) === true){
+      state = val.text;
+    }
+  });
+  
+  let country = '';
+  axResponse.data.features[0].context.forEach((val) => {
+    if(/(country).[0-9]+/.test(val.id) === true){
+      country = val.text;
+    }
+  });
+
 
   const mapboxObj = {
     id: id,
