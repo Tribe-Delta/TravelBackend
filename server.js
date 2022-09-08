@@ -66,7 +66,7 @@ async function deleteLocationInfo(request, response, next) {
 
 // Create: Add a country (and notes) to the database. 
 app.post('/location', postLocationInfo);
-
+console.log('Youre inside of the Post function');
 async function postLocationInfo(request, response, next) {
   let newLoc = await getMapbox(request.body.cityName, request.user.email, request.body.notes);
   try {
