@@ -22,13 +22,11 @@ async function seed() {
     currencySymbol: '$',
     firstLanguage: 'English',
     secondLanguage: 'Spanish',
-    email: 'spacemandan01@gmail.com',
+    email: 'fake@email.com',
     notes:''
     // conversion_rate: {type: String, required: false},
     // base_currency: {type: String, required: false}
   });
-
-  console.log('You seeded it!!!!!');
 
   mongoose.disconnect();
 }

@@ -23,11 +23,8 @@ const getMapbox = require('./location.js');
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
-  console.log('Our Mongoose is connected');
+  console.log('Connected to database');
 });
-
-
-// API Routes
 
 // Database Routes
 app.get('/', (request, response) => {
@@ -38,9 +35,7 @@ app.get('/', (request, response) => {
 app.get('/location', getLocationInfo);
 
 async function getLocationInfo(request, response, next) {
-  console.log('You are in the GET function');
   try {
-    // Dan, is the get request on pageload checking via email on the line below?
     let results = await Location.find({email: request.user.email});
     response.status(200).send(results);
   } catch (error) {
@@ -53,9 +48,7 @@ async function getLocationInfo(request, response, next) {
 app.delete('/location/:locationid', deleteLocationInfo);
 
 async function deleteLocationInfo(request, response, next) {
-  console.log('Youre inside of the DELETE function');
   const id = request.params.locationid;
-  console.log(id);
   try {
     await Location.findByIdAndDelete(id);
     response.status(204).send('success!');
@@ -66,7 +59,6 @@ async function deleteLocationInfo(request, response, next) {
 
 // Create: Add a country (and notes) to the database. 
 app.post('/location', postLocationInfo);
-console.log('Youre inside of the Post function');
 async function postLocationInfo(request, response, next) {
   let newLoc = await getMapbox(request.body.cityName, request.user.email, request.body.notes);
   try {
@@ -81,12 +73,7 @@ async function postLocationInfo(request, response, next) {
 app.put('/location/:locationid', putLocationInfo);
 
 async function putLocationInfo(request, response, next) {
-  console.log('Youre inside of the PUT function');
-  console.log(request.body.city);
-  console.log(request.user.email);
-  console.log(request.body.notes);
   let id = request.params.locationid;
-  console.log(id);
   try {
     let data = await getMapbox(request.body.city, request.user.email, request.body.notes);
     const updateLocation = await Location.findByIdAndUpdate(id, {...data, email: request.user.email}, {new: true, overwrite: true});
@@ -105,6 +92,5 @@ app.get('*', (request, response) => {
 app.use((error, request, response, next) => {
   response.status(500).send(error.message);
 });
-
 
 app.listen(PORT, '127.0.0.1', () => console.log(`We are up on PORT: ${PORT}`));

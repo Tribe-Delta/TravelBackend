@@ -4,7 +4,6 @@ const axios = require('axios');
 
 // sample url used to gather initial Mapbox data = `https://api.mapbox.com/geocoding/v5/mapbox.places/seattle.json?types=place&access_token={process.env.MAPBOX_API_PUBLIC_KEY}`
 
-  
 async function getMapbox(cityName, userEmail, notes) {
   const baseURL = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
   const searchType = '.json?types=place&access_token=';
@@ -12,9 +11,6 @@ async function getMapbox(cityName, userEmail, notes) {
   const url = `${baseURL}${searchQueryName}${searchType}${process.env.MAPBOX_API_PUBLIC_KEY}`;
 
   let axResponse = await axios.get(url);
-  console.log(url);
-
-
   let id = axResponse.data.features[0].id;
   let longitude = axResponse.data.features[0].geometry.coordinates[0];
   let latitude = axResponse.data.features[0].geometry.coordinates[1];
@@ -31,13 +27,8 @@ async function getMapbox(cityName, userEmail, notes) {
   axResponse.data.features[0].context.forEach((val) => {
     if(/(country).[0-9]+/.test(val.id) === true){
       country = val.text;
-      console.log('=====================');
-      console.log(val.text);
       var index = axResponse.data.features[0].context.findIndex(p => p.id === val.id);
-      console.log('Index of country: ', index);
       shortCode = axResponse.data.features[0].context[index].short_code;
-      console.log('________________________');
-      console.log(country);
     }
   })
 
@@ -56,9 +47,8 @@ async function getMapbox(cityName, userEmail, notes) {
   return getRestCountries(mapboxObj);
 }
 
-
 // sample url used to gather initial RestCountries data = 'https://restcountries.com/v2/name/malta';
-// https://restcountries.com/v2/name/MT?fullText=true
+// https://restcountries.com/v2/name/US?fullText=true
 
 async function getRestCountries(mapboxObj) {
   
@@ -101,9 +91,7 @@ async function getRestCountries(mapboxObj) {
     notes: notes
   };
 
-  console.log(placeObj);
   return placeObj;
 }
-
 
 module.exports = getMapbox;
