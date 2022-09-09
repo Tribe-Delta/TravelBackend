@@ -14,7 +14,7 @@ async function getMapbox(cityName, userEmail, notes) {
   let id = axResponse.data.features[0].id;
   let longitude = axResponse.data.features[0].geometry.coordinates[0];
   let latitude = axResponse.data.features[0].geometry.coordinates[1];
-  let city = axResponse.data.features[0].text;
+  let city = cityName;
   let state = '';
   axResponse.data.features[0].context.forEach((val) => {
     if(/(region).[0-9]+/.test(val.id) === true){
