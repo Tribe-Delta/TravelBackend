@@ -60,6 +60,7 @@ async function deleteLocationInfo(request, response, next) {
 // Create: Add a country (and notes) to the database. 
 app.post('/location', postLocationInfo);
 async function postLocationInfo(request, response, next) {
+  console.log(request.body.cityName);
   let newLoc = await getMapbox(request.body.cityName, request.user.email, request.body.notes);
   try {
     const newLocation = await Location.create({...newLoc, email: request.user.email});
@@ -73,8 +74,9 @@ async function postLocationInfo(request, response, next) {
 app.put('/location/:locationid', putLocationInfo);
 
 async function putLocationInfo(request, response, next) {
-  let id = request.params.locationid;
   try {
+    console.log(request.body.city);
+    let id = request.params.locationid;
     let data = await getMapbox(request.body.city, request.user.email, request.body.notes);
     const updateLocation = await Location.findByIdAndUpdate(id, {...data, email: request.user.email}, {new: true, overwrite: true});
     response.status(203).send(updateLocation);
