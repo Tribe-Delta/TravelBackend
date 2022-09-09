@@ -93,4 +93,4 @@ app.use((error, request, response, next) => {
   response.status(500).send(error.message);
 });
 
-app.listen(PORT, '127.0.0.1', () => console.log(`We are up on PORT: ${PORT}`));
+app.listen(PORT, () => console.log(`We are up on PORT: ${PORT}`));
