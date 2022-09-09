@@ -82,10 +82,13 @@ app.put('/location/:locationid', putLocationInfo);
 
 async function putLocationInfo(request, response, next) {
   console.log('Youre inside of the PUT function');
+  console.log(request.body.city);
+  console.log(request.user.email);
+  console.log(request.body.notes);
   let id = request.params.locationid;
   console.log(id);
   try {
-    let data = await getMapbox(request.body.cityName, request.user.email, request.body.notes);
+    let data = await getMapbox(request.body.city, request.user.email, request.body.notes);
     const updateLocation = await Location.findByIdAndUpdate(id, {...data, email: request.user.email}, {new: true, overwrite: true});
     response.status(203).send(updateLocation);
   } catch (error) {
