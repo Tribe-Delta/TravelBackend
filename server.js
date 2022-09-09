@@ -43,7 +43,6 @@ async function getLocationInfo(request, response, next) {
   }
 }
 
-
 // Delete
 app.delete('/location/:locationid', deleteLocationInfo);
 
